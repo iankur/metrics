@@ -4,9 +4,7 @@ import sys
 import pandas as pd
 import numpy as np
 from PIL import Image
-from IPython.display import display
 import collections.abc as container_abcs
-from matplotlib import pyplot as plt
 from tqdm import tqdm, trange
 from glob import glob
 import argparse
@@ -29,13 +27,13 @@ def main():
     
     all_logits = []
     
-    ids = os.listdir(args.samples_dir)
+    ids = [d for d in os.listdir(args.samples_dir) if not d.startswith('.')]
     
     for id in tqdm(ids, leave=False):    
         prompt_path = os.path.join(args.captions_dir, f"{id}.txt")
         prompt = open(prompt_path).read().strip()
         
-        image_paths = glob(os.path.join(args.samples_dir, id, '*.jpg'))
+        image_paths = glob(os.path.join(args.samples_dir, id, '*.png'))
         images = [Image.open(image_path) for image_path in image_paths]
         
         with torch.no_grad():
