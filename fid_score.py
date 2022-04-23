@@ -52,7 +52,6 @@ except ImportError:
         return x
 
 from inception import InceptionV3
-from data import CenterCropLongEdge
 
 parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
 parser.add_argument('--image-size', type=int, default=256, help='Image size after center crop')
@@ -73,6 +72,26 @@ parser.add_argument('path', type=str, nargs=2,
 
 IMAGE_EXTENSIONS = {'bmp', 'jpg', 'jpeg', 'pgm', 'png', 'ppm',
                     'tif', 'tiff', 'webp'}
+
+
+class CenterCropLongEdge(object):
+    """Crops the given PIL Image on the long edge.
+    Args:
+      size (sequence or int): Desired output size of the crop. If size is an
+          int instead of sequence like (h, w), a square crop (size, size) is
+          made.
+    """
+    def __call__(self, img):
+        """
+        Args:
+            img (PIL Image): Image to be cropped.
+        Returns:
+            PIL Image: Cropped image.
+        """
+        return TF.functional.center_crop(img, min(img.size))
+
+    def __repr__(self):
+        return self.__class__.__name__
 
 
 class ImagePathDataset(torch.utils.data.Dataset):
